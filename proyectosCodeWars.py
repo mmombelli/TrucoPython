@@ -151,7 +151,6 @@ def armar_mano():
 
 # LOOP DEL JUEGO
 
-
 # INSTANCIAR JUGADORES AL COMIENZO DE LA RONDA, O SEA, REPARTIR LAS MANOS.
 def jugar_una_mano(jugador_A, jugador_B):
     #if contador < 15:                  #COMIENZO DE PARTIDA A 15
@@ -226,5 +225,6 @@ jugador2 = Jugador([], 0, 0)
 #print(jugador2.cartas_en_mano)
 print(mazo)
 print("\n")
+print("prueba")
 
 print(jugar_una_mano(jugador1, jugador2))  # SIMULACION MANO
