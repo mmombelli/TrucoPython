@@ -1,0 +1,2 @@
+# TrucoPython
+Truco en Python
