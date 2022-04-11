@@ -1,8 +1,7 @@
 # TRUCO
-from errno import ESOCKTNOSUPPORT
+from logging import raiseExceptions
 import random
 import os
-
 
 def clear_console():
     os.system('clear')
@@ -121,13 +120,6 @@ class Jugador:
     def ver_cartas(self):
         return self.cartas_en_mano
 
-    def calcularEnvido(self):
-        envido = 0
-        #if 
-        return envido    
-
-
-contador = (0,0) # CONTADOR DE PUNTOS
 
 
 def carta_mata_carta(carta1, carta2): # CARTA VS CARTA
@@ -149,52 +141,60 @@ def armar_mano():
 
     return mano
 
+def jugar_Envido(jugador_A, jugador_B):
+
+    
+    if envido(jugador_A) > envido(jugador_B):
+        print(f"\nGana jugador 1: {envido(jugador_A)} > {envido(jugador_B)}\n")
+        return 0
+
+    elif envido(jugador_A) < envido(jugador_B):
+        print(f"\nGana jugador 2: {envido(jugador_B)} > {envido(jugador_A)}\n")
+        return 1
+
+    else: 
+        print(f"\nGana jugador 1: {envido(jugador_A)} = {envido(jugador_B)}; jugador 1 es mano \n")
+        return 0
+
+    pass                
+
 # LOOP DEL JUEGO
 
-# INSTANCIAR JUGADORES AL COMIENZO DE LA RONDA, O SEA, REPARTIR LAS MANOS.
 def jugar_una_mano(jugador_A, jugador_B):
-    #if contador < 15:                  #COMIENZO DE PARTIDA A 15
+    contador = [0,0] # CONTADOR DE PUNTOS
+    envido_cantado = False
+    primera_mano_jugada = False
+
     jugador_A.armarMano()
     jugador_B.armarMano() 
     
     while(jugador_B.tieneCartas()): #COMIENZO DE MANO
-            # clear_console()
 
         if (jugador_A.puntos_totales() == 2 or jugador_B.puntos_totales() == 2):  # GANA DOS MANOS
             break
 
-        print(f"\nPUNTOS DEL JUGADOR: {jugador_A.puntos_totales()}\n")
-        print(f"\nPUNTOS DEL JUGADOR: {jugador_B.puntos_totales()}\n")
+        print(f"\nPUNTOS DEL JUGADOR: {contador[0]}\n")
+        print(f"\nPUNTOS DEL JUGADOR: {contador[1]}\n")
         print(f"\nCartas jugador_1: {jugador1.cartas_en_mano}")
-        print("\n Escriba 'envido' para canta envido; 'truco' para cantar truco; 'R' para irse al mazo. 'C' para continuar \n")
-        carta1 = input("\nElija una carta de su mano: \n")
+
+        if not envido_cantado and not primera_mano_jugada:    
+            opcion = input("\n Quiere cantar envido?: (si/no)")
+ 
+            if opcion == "si":
+                contador[jugar_Envido(jugador_A,jugador_B)] += 2
+                envido_cantado = True
+            else: pass    
+        
+        carta1 = input("\nElija una carta de su mano: ('R' para irse al mazo)\n")
             
         if carta1 == "R":       #IRSE AL MAZO (RESIGN)
             print("\nJugador 1 se fue al mazo.")
-
             break
-        
-        elif carta1 == "C": pass #CASO DE NO TENER ENVIDO NI TRUCO / CAMBIAR FORMATO DE ESTO
-
-        elif carta1 == "envido":
-            if envido(jugador_A) > envido(jugador_B):
-                print(f"\nGana jugador 1: {envido(jugador_A)} > {envido(jugador_B)}\n")
-
-            elif envido(jugador_A) < envido(jugador_B):
-                print(f"\nGana jugador 2: {envido(jugador_B)} > {envido(jugador_A)}\n")
-
-            else: 
-                print(f"\nGana jugador 1: {envido(jugador_A)} = {envido(jugador_B)}; jugador 1 es mano \n")    
-
-        elif carta1 == "truco":
-            print("Todavía no implementamos el truco. Disculpe las molestias\n")
-
-        print(f"\nCartas jugador_1: {jugador1.cartas_en_mano}")
-        carta1 = input("\nElija una carta de su mano: \n")
 
         jugador_A.tirarCarta(carta1)
-        #carta1 = jugador_A.tirarCarta()
         carta2 = jugador_B.tirarCarta_random()
+
+        primera_mano_jugada = True
             
         if carta_mata_carta(carta1, carta2) == 0.5:  # CARTAS TIENEN MISMO VALOR
             jugador_A.sumar_puntos(0.5)
@@ -207,10 +207,21 @@ def jugar_una_mano(jugador_A, jugador_B):
             jugador_B.sumar_puntos(1)
             print("\n GANA JUGADOR 2 \n")
 
+    if jugador_A.manos_ganadas > jugador_B.manos_ganadas :
+        contador[0] += 1
+    elif jugador_A.manos_ganadas < jugador_B.manos_ganadas :
+        contador[0] += 1
+    else:  print("EMPATE")        
 
 
     mazo = list(valor_cartas)
+    print(contador)
     return f"El jugador 1 ha ganado: {jugador_A.puntos_totales() >  jugador_B.puntos_totales()}"
+
+
+
+
+
 
 
 # INSTANCIAS DE JUGADORES
@@ -225,6 +236,5 @@ jugador2 = Jugador([], 0, 0)
 #print(jugador2.cartas_en_mano)
 print(mazo)
 print("\n")
-print("prueba")
 
 print(jugar_una_mano(jugador1, jugador2))  # SIMULACION MANO
